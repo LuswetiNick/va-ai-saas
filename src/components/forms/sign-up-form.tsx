@@ -28,6 +28,8 @@ import { useState } from "react";
 import { Loader2 } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 import { toast } from "sonner";
+import Google from "../../../public/google-svg";
+import { useRouter } from "next/navigation";
 
 const formSchema = z
   .object({
@@ -50,6 +52,7 @@ const formSchema = z
   });
 
 const SignUpForm = () => {
+  const router = useRouter();
   const [pending, setPending] = useState(false);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -75,6 +78,7 @@ const SignUpForm = () => {
         onSuccess: () => {
           setPending(false);
           toast.success("Account created successfully!");
+          router.push("/login"); // redirect to login page
         },
         onError: (ctx) => {
           setPending(false);
@@ -156,6 +160,25 @@ const SignUpForm = () => {
             </Button>
           </form>
         </Form>
+        <div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t my-2">
+          <span className="bg-background text-muted-foreground relative z-10 px-2">
+            Or continue with
+          </span>
+        </div>
+        <Button
+          variant="outline"
+          className="w-full"
+          disabled={pending}
+          onClick={async () =>
+            await authClient.signIn.social({
+              provider: "google",
+              callbackURL: "/dashboard",
+            })
+          }
+        >
+          <Google />
+          Login with Google
+        </Button>
       </CardContent>
       <CardFooter className=" flex items-center text-center text-sm w-full">
         <p>Already have an account?</p>
