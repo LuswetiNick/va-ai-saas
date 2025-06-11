@@ -8,7 +8,7 @@ const LogoutButton = () => {
   const router = useRouter();
   return (
     <Button
-      variant="ghost"
+      variant="outline"
       onClick={async () =>
         await authClient.signOut({
           fetchOptions: {
